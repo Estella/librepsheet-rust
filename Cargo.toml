@@ -1,0 +1,7 @@
+[package]
+name = "librepsheet"
+version = "0.0.1"
+authors = ["Aaron Bedra <aaron@aaronbedra.com>"]
+
+[dependencies]
+redis = "0.5.3"

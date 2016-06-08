@@ -11,11 +11,33 @@ pub fn blacklist(connection: &redis::Connection, actor: &str, reason: &str) -> r
     Ok(())
 }
 
-pub fn status(connection: &redis::Connection, actor: &str) -> String {
-    let check = connection.exists(format!("{}:repsheet:ip:blacklisted", actor));
-    if check == Ok(true) {
-        return "Blacklisted".to_string();
-    } else {
-        return "OK".to_string();
+pub fn is_blacklisted(connection: &redis::Connection, actor: &str) -> bool {
+    if connection.exists(format!("{}:repsheet:ip:blacklisted", actor)).unwrap() {
+        return true;
     }
+    return false;
+}
+
+pub fn whitelist(connection: &redis::Connection, actor: &str, reason: &str) -> redis::RedisResult<()> {
+    let _ : () = try!(connection.set(format!("{}:repsheet:ip:whitelisted", actor), reason));
+    Ok(())
+}
+
+pub fn is_whitelisted(connection: &redis::Connection, actor: &str) -> bool {
+    if connection.exists(format!("{}:repsheet:ip:whitelisted", actor)).unwrap() {
+        return true;
+    }
+    return false;
+}
+
+pub fn mark(connection: &redis::Connection, actor: &str, reason: &str) -> redis::RedisResult<()> {
+    let _ : () = try!(connection.set(format!("{}:repsheet:ip:marked", actor), reason));
+    Ok(())
+}
+
+pub fn is_marked(connection: &redis::Connection, actor: &str) -> bool {
+    if connection.exists(format!("{}:repsheet:ip:marked", actor)).unwrap() {
+        return true;
+    }
+    return false;
 }
